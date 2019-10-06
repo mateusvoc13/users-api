@@ -1,0 +1,14 @@
+image: python:3.6-onbuild
+
+stages:
+  - lint
+  - build
+  - test
+  
+lint-python:
+  stage: lint
+  script:
+  - apt-get update -qy
+  - apt-get install -y python-dev python-pip
+  - pip install flake8
+  - flake8 --config=flake8.conf --exclude=venv/ --exclude=.git/ .
