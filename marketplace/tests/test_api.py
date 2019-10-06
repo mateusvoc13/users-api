@@ -56,8 +56,7 @@ class APITestCase(TestCase):
         self.assertEqual(Client.objects.all().count(), 3)
         self.assertEqual(client.delete('/api/clients/3').status_code, 204)
         self.assertEqual(Client.objects.all().count(), 2)
-        
-        
+
     def _test_setting_list_of_favorites(self, client, c5):
         """
         Aims to verify if the API allows setting the list of favorites
@@ -80,9 +79,10 @@ class APITestCase(TestCase):
 
         self.assertEqual(_ld_rsp(client.get('/api/product/')).get('count'), 3)
 
-    def cases(self):
-        """Here is the set of test cases that was created to automatically
-        verify the Products/Clients API. 
+    def test_cases(self):
+        """
+        Aims to organize the test cases in a single place managing
+        execution order and if all the expected scenarios are present.
 
         """
         client = APIClient()
