@@ -13,21 +13,28 @@ def _ld_rsp(response):
 class APITestCase(TestCase):
 
     def _test_creating_clients(self, client, c1, c2, c3):
+        """
+        Aims to verify if the create and view methods of the Clients API
+        are working as expected and if the changes are being reflected
+        in the database.
 
+        """
         client.post('/api/clients/', c1)
 
         client1 = Client.objects.get(name='Client1')
         self.assertEqual(client1.email, 'client1@email.com')
-
         self.assertEqual(_ld_rsp(client.get('/api/clients/')).get('count'), 1)
 
         client.post('/api/clients/', c2)
-
         client.post('/api/clients/', c3)
-
         self.assertEqual(_ld_rsp(client.get('/api/clients/')).get('count'), 3)
 
     def _test_repeated_client_email(self, client, c4):
+        """
+        Aims to verify if the 'unique' constraint of the email field is
+        being respected by the API.
+
+        """
         rpt_rsp = client.post('/api/clients/', c4)
 
         self.assertEqual(rpt_rsp.status_code, 400)
@@ -39,11 +46,34 @@ class APITestCase(TestCase):
         self.assertEqual(client.put('/api/clients/3', c6).status_code, 200)
         self.assertTrue(Client.objects.get(email='client3new@email.com'))
 
+    def _test_remove_client(self, client, c6):
+        """
+        Aims to verify if the delete method works as expected in the
+        Clients API and ifthe number of clients in the database drops
+        after the procedure.
+
+        """
+        self.assertEqual(Client.objects.all().count(), 3)
+        self.assertEqual(client.delete('/api/clients/3').status_code, 204)
+        self.assertEqual(Client.objects.all().count(), 2)
+        
+        
     def _test_setting_list_of_favorites(self, client, c5):
+        """
+        Aims to verify if the API allows setting the list of favorites
+        through a PUT method and if the update is reflected in the
+        database.
+
+        """
         self.assertEqual(client.put('/api/clients/3', c5).status_code, 200)
         self.assertTrue(Client.objects.get(productslist=c5['productslist']))
 
     def _test_creating_products(self, client, p1, p2, p3):
+        """
+        Aims to verify if the API allows to create products using the
+        format that comes from the mock_data file and
+
+        """
         client.post('/api/product/', p1, format='json')
         client.post('/api/product/', p2, format='json')
         client.post('/api/product/', p3, format='json')
@@ -51,6 +81,10 @@ class APITestCase(TestCase):
         self.assertEqual(_ld_rsp(client.get('/api/product/')).get('count'), 3)
 
     def cases(self):
+        """Here is the set of test cases that was created to automatically
+        verify the Products/Clients API. 
+
+        """
         client = APIClient()
         user = User.objects.create(username='admin')
         client.force_login(user=user)
@@ -63,3 +97,4 @@ class APITestCase(TestCase):
         self._test_creating_products(client, p1, p2, p3)
         self._test_update_client(client, c6)
         self._test_setting_list_of_favorites(client, c5)
+        self._test_remove_client(client, c3)
