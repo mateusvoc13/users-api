@@ -1,10 +1,12 @@
+from marketplace.models import idGenerator
+
+
 def mock_product1():
     return {
-        "title": "Product1",
-        "price": "300.10",
-        "image": "http://google.com",
-        "brand": "Brand1",
-        "reviewscore": "3"
+        'title': 'Product1',
+        'price': '300.10',
+        'brand': 'Brand1',
+        'reviewscore': '13'
     }
 
 
@@ -60,7 +62,7 @@ def mock_client_with_product_list():
     return {
         'name': 'Client3',
         'email': 'client3@email.com',
-        'productslist': 1
+        'productslist': idGenerator(mock_product1())
     }
 
 
