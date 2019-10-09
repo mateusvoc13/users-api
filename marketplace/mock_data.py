@@ -20,6 +20,13 @@ def mock_product2():
     }
 
 
+def mock_admin():
+    return {
+        'username': 'admin',
+        'password': 'adminadmin',
+    }
+
+
 def mock_product3():
     return {
         'title': 'Product3',

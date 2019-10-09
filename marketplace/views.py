@@ -1,24 +1,28 @@
 import logging
-
 from marketplace.models import Product, Client, idGenerator
 from marketplace.serializers import ClientSerializer, ProductSerializer
 from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
+from rest_framework.permissions import IsAuthenticated
+
 
 logger = logging.getLogger('exceptions')
 _default_image_url = 'http://challenge-api.luizalabs.com/images/%s'
 
 
 class ClientView(ListCreateAPIView):
+    permission_classes = (IsAuthenticated,)
     queryset = Client.objects.get_queryset().order_by('id')
     serializer_class = ClientSerializer
 
 
 class SingleClientView(RetrieveUpdateDestroyAPIView):
+    permission_classes = (IsAuthenticated,)
     queryset = Client.objects.get_queryset().order_by('id')
     serializer_class = ClientSerializer
 
 
 class ProductView(ListCreateAPIView):
+    permission_classes = (IsAuthenticated,)
     queryset = Product.objects.get_queryset().order_by('id')
     serializer_class = ProductSerializer
 
@@ -41,5 +45,6 @@ class ProductView(ListCreateAPIView):
 
 
 class SingleProductView(RetrieveUpdateDestroyAPIView):
+    permission_classes = (IsAuthenticated,)
     queryset = Product.objects.get_queryset().order_by('id')
     serializer_class = ProductSerializer

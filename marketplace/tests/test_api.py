@@ -2,12 +2,22 @@ import json
 from rest_framework.test import APIClient
 from django.test import TestCase
 from marketplace.models import Client
-from marketplace.mock_data import product_helper, client_helper
+from marketplace.mock_data import product_helper, client_helper, mock_admin
 from django.contrib.auth.models import User
+from rest_framework.authtoken.models import Token
 
 
 def _ld_rsp(response):
     return json.loads(response.content.decode())
+
+
+def create_admin_and_token():
+    user = User.objects.create_superuser(username='admin',
+                                         email='email1@email.com',
+                                         password='adminadmin')
+    user.save()
+    Token.objects.create(user=user)
+    return user
 
 
 class APITestCase(TestCase):
@@ -86,7 +96,12 @@ class APITestCase(TestCase):
 
         """
         client = APIClient()
-        user = User.objects.create(username='admin')
+        user = create_admin_and_token()
+        token_request = client.post('/api-token-auth/', mock_admin(),  format='json')
+        self.assertEqual(token_request.status_code, 200)
+        token2 = json.loads(token_request.content.decode()).get('token')
+
+        client.credentials(HTTP_AUTHORIZATION='Token ' + token2)
         client.force_login(user=user)
 
         c1, c2, c3, c4, c5, c6 = client_helper()
