@@ -1,0 +1,97 @@
+* Marketplace Challenge  
+
+  Desenvolvida utilizando o Django Rest Framework, apresentando
+  autenticação por token, testes unitários, métodos para criação de
+  usuário administrativo e para população de banco de dados utilizando
+  endereço sugerido pelo desafio, configuração de CI e Docker para
+  fácil utilização.
+
+* Como iniciallizar e rodar a aplicação 
+
+** Python e Virtualenv
+
+#+BEGIN_SRC bash
+  - pip install virtualenv
+  - virtualenv venv
+  - . venv/bin/activate
+  - pip install -r requirements.txt 
+  - python3 manage.py makemigrations
+  - python3 manage.py migrate
+  - python3 manage.py migrate
+  - python3 manage.py initadmin
+  - python3 manage.py populate_db
+  - python3 manage.py runserver
+#+END_SRC
+
+
+** Docker
+
+#+BEGIN_SRC bash
+  - docker-compose build
+  - docker-compose up
+#+END_SRC
+
+
+* Autenticação 
+
+** Como realizar autenticação
+
+   Basta inserir o seguinte header nas suas requisições
+
+ #+BEGIN_EXAMPLE
+  'Authorization: Token db351caff2180d558bfc49582a8f031e8d011995'
+ #+END_EXAMPLE
+
+ Podendo o token ser obtido a partir dos métodos apresentados abaixo.
+  
+** Como conseguir um token
+
+*** API
+
+    Submeter um request POST com ~username~ e ~password~ (exemplo
+    abaixo) para o endereço: http://127.0.0.1:8000/api-token-auth/
+
+ #+BEGIN_SRC
+    {
+        'username': 'admin',
+        'password': 'adminadmin',
+    }
+ #+END_SRC 
+
+
+Para criação do admin, basta executar o comando 
+
+ #+BEGIN_SRC bash
+./manage.py initadmin
+ #+END_SRC 
+
+
+*** Django Admin
+
+    O token para autenticação também pode ser obtido através da página
+    de gestão de tokens no Django admin
+ 
+  #+BEGIN_EXAMPLE
+   http://127.0.0.1:8000/admin/authtoken/token/
+  #+END_EXAMPLE 
+
+* API
+
+  A api está dividida em dois endpoints principais:
+  
+ #+BEGIN_EXAMPLE
+  http://127.0.0.1:8000/api/clients/
+ #+END_EXAMPLE
+ 
+ e
+
+ #+BEGIN_EXAMPLE
+ http://127.0.0.1:8000/api/product/
+ #+END_EXAMPLE
+
+ Ambas possuem métodos POST e GET para criação dos respectivos objetos
+ e listagem dos objetos já presentes no banco de dados. 
+
+ Para edição, remoção e visualização individual de objetos, basta
+ adicionar a frente do endereço a ~id~ númerica para clientes e a ~id~
+ no seguinte formato para produtos: 'ffffadb2-ad43-8ae7-090f-3c3ac8167d78'
